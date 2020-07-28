@@ -1,6 +1,6 @@
-import { bfn } from "./b";
+import { z } from "./common";
 
 export function afn() {
   console.log("a call bfn");
-  bfn();
+  console.log(z);
 }

@@ -1,4 +1,5 @@
-import { bfn } from "./b";
+import { z } from "./common";
 
-bfn();
-import("./a").then(console.log);
+import("./a").then((a) => a.afn());
+import("./b").then(({ bfn }) => bfn());
+console.log(z);

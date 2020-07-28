@@ -1,14 +1,15 @@
-const Module = require("./module");
+const buildDep = require("./build-dep");
 const rewriteCode = require("./rewrite-code");
-const buildOuptut = require("./build-output");
+const buildOutput = require("./build-output");
+const buildChunk = require("./build-chunk");
 
 class Compiler {
   constructor(entry) {
     const sources = (this.sources = { modules: {}, mapModuleNameToId: {} });
-    const entryModule = new Module(entry, __dirname, sources);
-    sources.entry = entryModule.absoulutePath;
+    const entryModule = buildDep(entry, __dirname, sources);
+    sources.chunks = buildChunk(entryModule, null);
     rewriteCode(sources);
-    buildOuptut(sources);
+    buildOutput(sources);
   }
 }
 

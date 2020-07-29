@@ -217,16 +217,17 @@ module.exports = function rewriteCode(sources) {
 };
 
 // var _a__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(绝对路径)
+// loader传入的参数名可能是css-loader!./index.css
 function getModuleName(importPath, esImportId) {
-  return `_${path.basename(
-    importPath,
-    ".js"
-  )}__WEBPACK_IMPORTED_MODULE_${esImportId}__`;
-}
+  const prefix = importPath.endsWith(".js")
+    ? path.basename(importPath, ".js")
+    : importPath
+        .split("!")
+        .map((p) => path.normalize(p))
+        .join("_")
+        .replace(/[\.-]/g, "_");
 
-function findSourceById(sources, id) {
-  const values = Object.values(sources.modules);
-  return values.find((v) => v.id === id);
+  return `_${prefix}__WEBPACK_IMPORTED_MODULE_${esImportId}__`;
 }
 
 function getIdentiferMap(identifierMap, prefix, specifiers, esModule) {

@@ -17,14 +17,7 @@ module.exports = function parse(module) {
     CallExpression(path) {
       if (path.node.callee.name === "require") {
         const name = path.node.arguments[0].value;
-        if (name.match(/!/)) {
-          //   const request = self.getRequest(name);
-          //   path.get("arguments.0").replaceWith(t.stringLiteral(request));
-          //   loaderRequires.push(request);
-          //   dependencies.add(request);
-        } else {
-          syncDeps.add(name);
-        }
+        syncDeps.add(name);
       }
     },
     ExportDefaultDeclaration() {

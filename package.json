@@ -9,9 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "babylon": "^6.18.0",
     "@babel/generator": "^7.10.5",
     "@babel/traverse": "^7.10.5",
-    "@babel/types": "^7.10.5"
+    "@babel/types": "^7.10.5",
+    "babylon": "^6.18.0",
+    "css-loader": "^3.2.0"
   }
 }

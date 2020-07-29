@@ -5,12 +5,19 @@ const buildChunk = require("./build-chunk");
 
 class Compiler {
   constructor(entry) {
-    const sources = (this.sources = { modules: {}, mapModuleNameToId: {} });
-    const entryModule = buildDep(entry, __dirname, sources);
+    this.entry = entry;
+    this.sources = { modules: {}, mapModuleNameToId: {} };
+  }
+
+  async start() {
+    const { sources, entry } = this;
+    const entryModule = await buildDep(entry, __dirname, sources);
+    // console.log(sources);
     sources.chunks = buildChunk(entryModule, null);
     rewriteCode(sources);
     buildOutput(sources);
   }
 }
 
-new Compiler("../example/simple/index.js");
+const compiler = new Compiler("../example/loader/index.js");
+compiler.start();

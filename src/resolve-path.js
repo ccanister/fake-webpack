@@ -8,7 +8,7 @@ function parsePath(filepath, beRelativePath) {
   }
 
   let absoultePath =
-    resolveRelativePath(filepath, beRelativePath) + getExtName(filepath);
+    resolveRelativePath(filepath, beRelativePath || "") + getExtName(filepath);
   if (fileExist(absoultePath)) {
     return absoultePath;
   }

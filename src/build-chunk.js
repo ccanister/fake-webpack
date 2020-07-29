@@ -33,8 +33,8 @@ function addModuleToChunk(module, chunk) {
   if (empty(module.chunks) || notMainChunk(module.chunks)) {
     chunk.modules.push(module);
     module.chunks.push(chunk); // 一个模块可能属于多个chunk
-    module.syncDeps.forEach((syncDep) => addModuleToChunk(syncDep, chunk));
-    module.asyncDeps.forEach((asyncDep) => buildChunk(asyncDep, chunk));
+    module.syncDeps.forEach((syncDep) => addModuleToChunk(syncDep.module, chunk));
+    module.asyncDeps.forEach((asyncDep) => buildChunk(asyncDep.module, chunk));
   }
 }
 

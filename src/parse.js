@@ -39,8 +39,16 @@ module.exports = function parse(module) {
   });
 
   module.ast = ast;
-  module.asyncDeps = Array.from(asyncDeps);
-  module.syncDeps = Array.from(syncDeps);
+  module.asyncDeps = Array.from(asyncDeps).map((path) => new Dep(path));
+  module.syncDeps = Array.from(syncDeps).map((path) => new Dep(path));
+  module.deps = module.asyncDeps.concat(module.syncDeps);
 
   return module;
 };
+
+class Dep {
+  constructor(path) {
+    this.module = null;
+    this.path = path;
+  }
+}

@@ -16,16 +16,15 @@ function transDepsPath(sources) {
   const { modules } = sources;
   const keys = ownkeys(modules);
   for (let i = 0; i < keys.length; i++) {
-    const { asyncDeps, syncDeps } = modules[keys[i]];
-    transDepPath(asyncDeps, sources);
-    transDepPath(syncDeps, sources);
+    const { deps } = modules[keys[i]];
+    transDepPath(deps, sources);
   }
 }
 
 function transDepPath(deps, sources) {
   const { modules, mapModuleNameToId } = sources;
   for (let i = 0; i < deps.length; i++) {
-    deps[i] = modules[mapModuleNameToId[deps[i]]];
+    deps[i].module = modules[mapModuleNameToId[deps[i].path]];
   }
 }
 
@@ -51,13 +50,16 @@ class Module {
     this.code = readFile(absoulutePath);
     sources.modules[absoulutePath] = this;
     sources.mapModuleNameToId[path] = absoulutePath;
-    const { asyncDeps, syncDeps } = parse(this);
-    for (let i = 0; i < syncDeps.length; i++) {
-      new Module(syncDeps[i], absoulutePath, sources);
+    const { deps } = parse(this);
+    for (let i = 0; i < deps.length; i++) {
+      new Module(deps[i].path, absoulutePath, sources);
     }
-    for (let i = 0; i < asyncDeps.length; i++) {
-      new Module(asyncDeps[i], absoulutePath, sources);
-    }
+  }
+}
+
+class LoaderModule {
+  constructor(absoulutePath, sources) {
+    this.absoulutePath = absoulutePath;
   }
 }
 

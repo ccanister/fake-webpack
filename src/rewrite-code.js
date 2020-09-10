@@ -29,6 +29,7 @@ module.exports = function rewriteCode(sources) {
       const esImport = {};
       const chunkModule = modules[j];
       const { ast, esModule } = chunkModule;
+      const removeNodePaths = [];
       // 假设现在是require，我们不会对require的exports作任何处理，会对require导入调用__webpack__require方法
       traverse(ast, {
         CallExpression(path) {
@@ -94,7 +95,7 @@ module.exports = function rewriteCode(sources) {
               nodePath.node.specifiers,
               importSource.esModule
             );
-            nodePath.remove();
+            removeNodePaths.push(nodePath);
             return;
           }
           const moduleName = getModuleName(
@@ -202,6 +203,10 @@ module.exports = function rewriteCode(sources) {
           }
         },
       });
+
+      for (let nodePath of removeNodePaths) {
+        nodePath.remove();
+      }
 
       const code = generator
         .default(ast)

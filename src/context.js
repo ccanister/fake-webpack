@@ -12,12 +12,11 @@ class Compiler {
   async start() {
     const { sources, entry } = this;
     const entryModule = await buildDep(entry, __dirname, sources);
-    // console.log(sources);
     sources.chunks = buildChunk(entryModule, null);
     rewriteCode(sources);
     buildOutput(sources);
   }
 }
 
-const compiler = new Compiler("../example/loader/index.js");
+const compiler = new Compiler("../example/async/index.js");
 compiler.start();

@@ -1,17 +1,19 @@
-import { afn } from "./a";
-const { bfn } = require("./b");
-const d = require("./d");
-import { count, cfn } from "./c";
+import ces from "/Users/zhaorenjie/Documents/project/js/fake-webpack/example/simple/c.js";
+import { cfn } from "./c";
+const ccjs = require("./c");
+const { num } = require("./c");
 
-afn();
-bfn();
-cfn();
-d.default();
+console.log(ces);
+console.log(cfn);
+console.log(ccjs);
+console.log(num);
 
-const query = {};
-query.count = 1;
-console.log(query);
-function test() {
-  console.log(count);
-}
-test();
+import { count } from "./a";
+const acjs = require("./a");
+const { afn } = require("./a");
+import name from "./a";
+
+console.log(count);
+console.log(acjs);
+console.log(afn);
+console.log(name);

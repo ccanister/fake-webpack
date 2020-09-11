@@ -1,4 +1,6 @@
 export function afn() {
   console.log("a-------");
 }
-export const a = 1;
+export const count = 1;
+const name = "dabai";
+export default name;

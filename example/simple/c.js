@@ -1,7 +1,8 @@
-let count = 0;
+let num = 0;
 function cfn() {
   console.log("c-------");
-  count++;
+  num++;
 }
 
-module.exports = { cfn, count };
+module.exports = { cfn, num };
+

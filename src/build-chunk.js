@@ -16,7 +16,7 @@ const chunks = [];
 // 分离出来的不同chunk，导入了相同的模块，理应打包到相应的chunk去。
 function buildChunk(entryModule, parent) {
   // 原则2
-  if (!empty(entryModule.chunks)) {
+  if (parentIncludeModule(entryModule)) {
     return;
   }
   const chunk = parent
@@ -28,18 +28,65 @@ function buildChunk(entryModule, parent) {
 }
 
 function addModuleToChunk(module, chunk) {
+  if (parentIncludeModule(module)) {
+    return;
+  }
+  const childChunk = isParentChunk(module, chunk);
+  if (childChunk) {
+    childChunk.modules = childChunk.modules.filter(
+      (m) => m === module || module.syncDeps.includes(m)
+    );
+  }
   // 前者对应了原则1
   // 后者对应了原则3
-  if (empty(module.chunks) || notMainChunk(module.chunks)) {
-    chunk.modules.push(module);
-    module.chunks.push(chunk); // 一个模块可能属于多个chunk
-    module.syncDeps.forEach((syncDep) => addModuleToChunk(syncDep.module, chunk));
-    module.asyncDeps.forEach((asyncDep) => buildChunk(asyncDep.module, chunk));
-  }
+  chunk.modules.push(module);
+  module.chunks.push(chunk); // 一个模块可能属于多个chunk
+  module.syncDeps.forEach((syncDep) => addModuleToChunk(syncDep.module, chunk));
+  module.asyncDeps.forEach((asyncDep) => buildChunk(asyncDep.module, chunk));
 }
 
-function notMainChunk(chunks) {
-  return chunks.every((chunk) => !(chunk instanceof MainChunk));
+function moduleInclude() {}
+
+function isParentChunk(module, parentChunk) {
+  const chunks = module.chunks;
+  for (let i = 0; i < chunks.length; i++) {
+    if (recuriveIsParentChunk(chunks[i], parentChunk)) {
+      return chunks[i];
+    }
+  }
+  return null;
+}
+
+function recuriveIsParentChunk(chunk, parentChunk) {
+  while (chunk) {
+    if (chunk === parentChunk) {
+      return true;
+    }
+    chunk = chunk.parent;
+  }
+  return false;
+}
+
+function parentIncludeModule(module) {
+  const chunks = module.chunks;
+  let includeChunk;
+  for (let i = 0; i < chunks.length; i++) {
+    includeChunk = chunkFindModule(chunks[i].parent, module);
+    if (includeChunk) {
+      return includeChunk;
+    }
+  }
+  return null;
+}
+
+function chunkFindModule(chunk, module) {
+  if (!chunk) {
+    return null;
+  }
+  if (chunk.modules.includes(module)) {
+    return chunk;
+  }
+  return chunkFindModule(chunk.parent, module);
 }
 
 class Chunk {

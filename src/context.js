@@ -13,6 +13,7 @@ class Compiler {
     const { sources, entry } = this;
     const entryModule = await buildDep(entry, __dirname, sources);
     sources.chunks = buildChunk(entryModule, null);
+    console.log(sources.chunks);
     rewriteCode(sources);
     buildOutput(sources);
   }

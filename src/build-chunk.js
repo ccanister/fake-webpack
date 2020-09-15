@@ -16,7 +16,7 @@ const chunks = [];
 // 分离出来的不同chunk，导入了相同的模块，理应打包到相应的chunk去。
 function buildChunk(entryModule, parent) {
   // 原则2
-  if (parentIncludeModule(entryModule)) {
+  if (parentIncludeModule(entryModule, parent)) {
     return;
   }
   const chunk = parent
@@ -28,7 +28,7 @@ function buildChunk(entryModule, parent) {
 }
 
 function addModuleToChunk(module, chunk) {
-  if (parentIncludeModule(module)) {
+  if (parentIncludeModule(module, chunk)) {
     return;
   }
   const childChunk = isParentChunk(module, chunk);
@@ -44,8 +44,6 @@ function addModuleToChunk(module, chunk) {
   module.syncDeps.forEach((syncDep) => addModuleToChunk(syncDep.module, chunk));
   module.asyncDeps.forEach((asyncDep) => buildChunk(asyncDep.module, chunk));
 }
-
-function moduleInclude() {}
 
 function isParentChunk(module, parentChunk) {
   const chunks = module.chunks;
@@ -67,24 +65,22 @@ function recuriveIsParentChunk(chunk, parentChunk) {
   return false;
 }
 
-function parentIncludeModule(module) {
-  const chunks = module.chunks;
-  let includeChunk;
-  for (let i = 0; i < chunks.length; i++) {
-    includeChunk = chunkFindModule(chunks[i].parent, module);
-    if (includeChunk) {
-      return includeChunk;
+function parentIncludeModule(module, parent) {
+  while (parent) {
+    if (parent.modules.includes(module)) {
+      return true;
     }
+    parent = parent.parent;
   }
-  return null;
+  return false;
 }
 
 function chunkFindModule(chunk, module) {
   if (!chunk) {
-    return null;
+    return false;
   }
   if (chunk.modules.includes(module)) {
-    return chunk;
+    return true;
   }
   return chunkFindModule(chunk.parent, module);
 }

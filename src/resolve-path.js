@@ -13,6 +13,15 @@ function parsePath(filepath, beRelativePath) {
     return absoultePath;
   }
 
+  // 同级目录是否有
+  absoultePath = path.resolve(
+    beRelativePath ? path.dirname(beRelativePath) : __dirname,
+    filepath
+  );
+  if (fileExist(absoultePath)) {
+    return absoultePath;
+  }
+
   // node_modules 应该向上寻找node_modules
   absoultePath = path.resolve(__dirname, "../node_modules", filepath);
   if (fileExist(absoultePath)) {

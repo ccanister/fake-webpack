@@ -82,7 +82,9 @@ class LoaderModule extends Module {
   setPath(path, beRelativePath) {
     const loaderNames = path.split("!");
     const contentPath = loaderNames.pop();
-    const loaderPaths = loaderNames.map((name) => parsePath(name));
+    const loaderPaths = loaderNames.map((name) =>
+      parsePath(name, beRelativePath)
+    );
     const contentAbsolutePath = parsePath(contentPath, beRelativePath);
     this.path = path;
     this.contentAbsolutePath = contentAbsolutePath;
